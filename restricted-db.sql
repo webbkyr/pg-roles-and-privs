@@ -54,10 +54,13 @@ ALTER DEFAULT PRIVILEGES FOR ROLE employees_schema_admin IN SCHEMA employees GRA
 
 -- **** CREATE USERS WE'LL USE TO LOGIN ****
 CREATE ROLE employees_webapp WITH LOGIN PASSWORD 'foo';
+ALTER ROLE employees_webapp SET search_path TO employees;
 GRANT employees_writer TO employees_webapp;
 
 CREATE ROLE employees_webapp_admin WITH LOGIN PASSWORD 'foobar';
+ALTER ROLE employees_webapp_admin SET search_path TO employees;
 GRANT employees_admin TO employees_webapp_admin;
 
 CREATE ROLE employees_webapp_ro WITH LOGIN PASSWORD 'foobarbizz';
+ALTER ROLE employees_webapp_ro SET search_path TO employees;
 GRANT employees_reader TO employees_webapp_ro;
