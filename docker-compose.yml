@@ -1,0 +1,16 @@
+version: '3'
+services: 
+  db_test:
+    image: 'postgres:10.14'
+    container_name: pg-docker
+    ports:
+      - "30002:5432"
+    environment: 
+      - POSTGRES_DB=restricted_test
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+    volumes: 
+      - database-data:/var/lib/postgresql/data/
+volumes:
+  database-data: 
+# psql -h localhost -p 30002 -U docker postgres
