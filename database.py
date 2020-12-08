@@ -27,7 +27,10 @@ class BaseUser:
     self.master_user_name = master_user_name
 
   def __str__(self):
-    return f"<BaseUser db_schema={self.schema}, db_user={self.db_user}, allowed_role={self.allowed_role}, master_user_name={self.master_user_name}>"
+    return f"<BaseUser db_schema={self.schema},
+                       db_user={self.db_user},
+                       allowed_role={self.allowed_role}, 
+                       master_user_name={self.master_user_name}>"
   
   def secret(self):
     return ''

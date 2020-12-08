@@ -1,5 +1,6 @@
 import pytest
 from database import DbConnection, DbUser, SchemaOwner
+from permission import ReadWrite, Admin
 
 @pytest.fixture
 def db_credentials():
@@ -38,3 +39,33 @@ def test_create_db_user():
 def test_create_schema_owner():
   schema_owner = SchemaOwner('test')
   assert schema_owner.user_name == 'test'
+
+# def test_create_user():
+#   schema_owner = SchemaOwner('test')
+#   db_user = DbUser('test', 'my_app', 'read', 'postgres')
+  
+#   assert schema_owner.create_user('xyz')[0] == "CREATE USER test WITH PASSWORD 'xyz';"
+#   assert db_user.create_user('abc')[0] == "CREATE USER test_my_app WITH PASSWORD 'abc';"
+
+def test_readwrite_permission():
+  user = DbUser('test', 'my_app', 'readwrite', 'postgres')
+  rw = ReadWrite()
+
+  # create role
+  print("CREATING ROLE >>>>>>>>>>")
+  print(rw.create_role(user.role_name))
+  # base sqls
+  print("GRANTING PRIVILEGES TO ROLE >>>>>>>>>>")
+  print(rw.access_privileges('restricted_test', 'test', user.role_name))
+  # future objects
+  print("GRANTING DEFAULT PRIVS FOR SCHEMA OWNER TO ROLE >>>")
+  print(rw.default_access_privileges(user.default_privilege_grantor, user.schema, user.role_name))
+  # create user
+  print("CREATING USER >>>>>>>")
+  print(user.create_user('abc'))
+
+def test_admin_permission():
+  user = DbUser('test', 'my_app', 'admin', 'postgres')
+  admin = Admin()
+  # print(admin.sql('test','my_app', user.role_name))
+  # print(admin.future_object_sql(user.default_privilege_grantor, user.schema, user.user_name))
