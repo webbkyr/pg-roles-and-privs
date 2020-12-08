@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from psycopg2 import sql, connect
 
 class DbConnection:
@@ -20,23 +21,20 @@ class BaseUser:
               db_schema, 
               db_user=None,
               allowed_role=None,
-              master_user_name=None):
+              master_username=None):
     self.schema           = db_schema
     self.db_user          = db_user
     self.allowed_role     = allowed_role
-    self.master_user_name = master_user_name
+    self.master_username  = master_username
 
   def __str__(self):
-    return f"<BaseUser db_schema={self.schema},
-                       db_user={self.db_user},
-                       allowed_role={self.allowed_role}, 
-                       master_user_name={self.master_user_name}>"
+    return f"<BaseUser db_schema={self.schema},db_user={self.username},allowed_role={self.allowed_role},master_username={self.master_username}>"
   
   def secret(self):
     return ''
   
   @property
-  def user_name(self):
+  def username(self):
     return f"{self.schema}_{self.db_user}"
   
   @property
@@ -46,6 +44,11 @@ class BaseUser:
   @property
   def default_privilege_grantor(self):
     return f"{self.master_user_name}"
+  
+  def create_user(self, password):
+    print(f"CREATE USER {self.username} WITH PASSWORD '{password}';")
+    print(f"ALTER ROLE {self.username} SET search_path TO {self.schema}")
+    print(f"GRANT {self.role_name} TO {self.username};")
 
 
 class DbUser(BaseUser):
@@ -68,7 +71,6 @@ class SchemaOwner(BaseUser):
     super().__init__(db_schema)
   
   @property
-  def user_name(self):
+  def username(self):
     return f"{self.schema}"
 
-  
